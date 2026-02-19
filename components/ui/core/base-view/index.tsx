@@ -14,7 +14,7 @@ export const BaseView: React.FC<BaseViewProps> = ({
   scrollable = false,
   className = "flex-1 bg-white px-6",
   contentClassName = "flex-1",
-  edges = ["top", "bottom", "left", "right"],
+  edges = ["bottom", "left", "right"],
   style,
 }) => {
   return (

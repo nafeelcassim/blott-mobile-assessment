@@ -102,15 +102,34 @@ const inputFieldStyle = tva({
 });
 
 type IInputProps = React.ComponentProps<typeof UIInput> &
-  VariantProps<typeof inputStyle> & { className?: string; errorText?: string };
+  VariantProps<typeof inputStyle> & {
+    className?: string;
+    errorText?: string;
+    label?: string;
+    isRequired?: boolean;
+  };
 const Input = React.forwardRef<React.ComponentRef<typeof UIInput>, IInputProps>(
   function Input(
-    { className, variant = "outline", size = "md", errorText, ...props },
+    {
+      className,
+      variant = "outline",
+      size = "md",
+      errorText,
+      label,
+      isRequired = false,
+      ...props
+    },
     ref,
   ) {
     const isInvalid = Boolean(props.isInvalid);
     return (
       <View>
+        {label ? (
+          <View className="flex-row items-center mb-2">
+            <Text className="text-typography-700">{label}</Text>
+            {isRequired ? <Text className="">*</Text> : null}
+          </View>
+        ) : null}
         <UIInput
           ref={ref}
           {...props}
