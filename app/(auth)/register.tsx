@@ -2,12 +2,13 @@ import { BaseView } from "@/components/ui/core/base-view";
 import { Button, ButtonText } from "@/components/ui/core/button";
 import { EyeIcon, EyeOffIcon } from "@/components/ui/core/icon";
 import {
-  Input,
-  InputField,
-  InputIcon,
-  InputSlot,
+    Input,
+    InputField,
+    InputIcon,
+    InputSlot,
 } from "@/components/ui/core/input";
 import { PreLoginTitle } from "@/components/ui/title";
+import { useAuthStore } from "@/stores";
 import { RegisterInput, registerSchema } from "@/validations/register-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
@@ -18,6 +19,7 @@ import { View } from "react-native";
 export default function RegisterScreen() {
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
+  const register = useAuthStore((s) => s.register);
 
   const {
     control,
@@ -34,7 +36,11 @@ export default function RegisterScreen() {
   });
 
   const onSubmit = async (values: RegisterInput) => {
-    console.log("register", values);
+    await register({
+      fullName: values.fullName,
+      email: values.email,
+      password: values.password,
+    });
     router.navigate("/set-pin");
   };
 

@@ -1,1 +1,1 @@
-export * from "./news/use-general-news";
+export * from "./api";

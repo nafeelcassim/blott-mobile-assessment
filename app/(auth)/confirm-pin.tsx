@@ -1,13 +1,15 @@
 import { BaseView } from "@/components/ui/core/base-view";
 import { PinInput } from "@/components/ui/core/pin-input";
 import { PreLoginTitle } from "@/components/ui/title";
-import { useLocalSearchParams } from "expo-router";
+import { useAuthStore } from "@/stores";
+import { router, useLocalSearchParams } from "expo-router";
 import React from "react";
 import { View } from "react-native";
 
 export default function ConfirmPinScreen() {
   const { pin: initialPin } = useLocalSearchParams<{ pin?: string }>();
   const [pin, setPin] = React.useState("");
+  const setStoredPin = useAuthStore((s) => s.setPin);
 
   return (
     <BaseView>
@@ -21,10 +23,14 @@ export default function ConfirmPinScreen() {
           value={pin}
           onChange={setPin}
           autoFocus
-          onComplete={() => {
-            if (initialPin && pin !== initialPin) {
+          onComplete={async (completedPin) => {
+            if (initialPin && completedPin !== initialPin) {
+              setPin("");
               return;
             }
+
+            await setStoredPin(completedPin);
+            router.replace("/face-id");
           }}
         />
       </View>

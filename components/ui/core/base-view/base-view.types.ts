@@ -7,4 +7,5 @@ export interface BaseViewProps {
   contentClassName?: string;
   edges?: ("top" | "bottom" | "left" | "right")[];
   style?: StyleProp<ViewStyle>;
+  containsList?: boolean;
 }

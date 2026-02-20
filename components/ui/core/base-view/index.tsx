@@ -5,6 +5,7 @@ import {
   Platform,
   ScrollView,
   TouchableWithoutFeedback,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BaseViewProps } from "./base-view.types";
@@ -16,6 +17,7 @@ export const BaseView: React.FC<BaseViewProps> = ({
   contentClassName = "flex-1",
   edges = ["bottom", "left", "right"],
   style,
+  containsList = false,
 }) => {
   return (
     <SafeAreaView className={className} edges={edges} style={style}>
@@ -24,25 +26,28 @@ export const BaseView: React.FC<BaseViewProps> = ({
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 24}
       >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-          {scrollable ? (
-            <ScrollView
-              className={contentClassName}
-              contentInsetAdjustmentBehavior="automatic"
-              keyboardShouldPersistTaps="handled"
-              showsVerticalScrollIndicator={false}
-            >
-              {children}
-            </ScrollView>
-          ) : (
-            // View must be a direct child of TouchableWithoutFeedback
-            // so we wrap children in a plain View via the `className` prop trick.
-            // Using Box from GlueStack also works here.
+        {scrollable ? (
+          <ScrollView
+            className={contentClassName}
+            contentInsetAdjustmentBehavior="automatic"
+            keyboardDismissMode="on-drag"
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
+            {children}
+          </ScrollView>
+        ) : containsList ? (
+          <View className="flex-1">{children}</View>
+        ) : (
+          <TouchableWithoutFeedback
+            onPress={Keyboard.dismiss}
+            accessible={false}
+          >
             <KeyboardAvoidingView className={contentClassName}>
               {children}
             </KeyboardAvoidingView>
-          )}
-        </TouchableWithoutFeedback>
+          </TouchableWithoutFeedback>
+        )}
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

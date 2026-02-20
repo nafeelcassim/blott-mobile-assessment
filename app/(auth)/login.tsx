@@ -1,6 +1,8 @@
 import { BaseView } from "@/components/ui/core/base-view";
 import { Button, ButtonText } from "@/components/ui/core/button";
+import { useAuthStore } from "@/stores";
 import { LinearGradient } from "expo-linear-gradient";
+import * as LocalAuthentication from "expo-local-authentication";
 import { router } from "expo-router";
 import React from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
@@ -8,6 +10,11 @@ import { Pressable, Text, TextInput, View } from "react-native";
 export default function LoginScreen() {
   const [pin, setPin] = React.useState("");
   const inputRef = React.useRef<TextInput>(null);
+  const loginWithPin = useAuthStore((s) => s.loginWithPin);
+  const loginWithFaceId = useAuthStore((s) => s.loginWithFaceId);
+  const faceIdEnabled = useAuthStore((s) => s.faceIdEnabled);
+
+  const [isFaceIdSupported, setIsFaceIdSupported] = React.useState(false);
 
   const maxLength = 4;
   const isComplete = pin.length === maxLength;
@@ -17,9 +24,30 @@ export default function LoginScreen() {
     setPin(next);
   };
 
-  const onContinue = () => {
+  const onContinue = async () => {
     if (!isComplete) return;
-    router.navigate("/face-id");
+    const ok = await loginWithPin(pin);
+    if (ok) {
+      router.replace("/(main)");
+      return;
+    }
+
+    setPin("");
+  };
+
+  const onUseFaceId = async () => {
+    if (!faceIdEnabled || !isFaceIdSupported) return;
+
+    const result = await LocalAuthentication.authenticateAsync({
+      promptMessage: "Login with Face ID",
+      cancelLabel: "Cancel",
+      fallbackLabel: "Use Passcode",
+    });
+
+    if (result.success) {
+      await loginWithFaceId();
+      router.replace("/(main)");
+    }
   };
 
   React.useEffect(() => {
@@ -28,6 +56,21 @@ export default function LoginScreen() {
     }, 50);
     return () => clearTimeout(timer);
   }, []);
+
+  React.useEffect(() => {
+    const check = async () => {
+      if (!faceIdEnabled) {
+        setIsFaceIdSupported(false);
+        return;
+      }
+
+      const hasHardware = await LocalAuthentication.hasHardwareAsync();
+      const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+      setIsFaceIdSupported(hasHardware && isEnrolled);
+    };
+
+    void check();
+  }, [faceIdEnabled]);
 
   return (
     <BaseView className="flex-1 bg-primary-700">
@@ -86,6 +129,23 @@ export default function LoginScreen() {
             caretHidden
             className="absolute opacity-0"
           />
+
+          {faceIdEnabled && isFaceIdSupported ? (
+            <Pressable onPress={onUseFaceId} className="mt-4">
+              <Text className="text-white/80 text-sm underline">
+                Use Face ID
+              </Text>
+            </Pressable>
+          ) : null}
+
+          <Pressable
+            onPress={() => router.navigate("/register")}
+            className="mt-6"
+          >
+            <Text className="text-white/80 text-sm underline">
+              Don’t have an account?
+            </Text>
+          </Pressable>
         </View>
 
         <View className="pb-6">
