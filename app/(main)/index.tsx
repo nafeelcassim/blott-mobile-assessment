@@ -4,9 +4,10 @@ import {
   HomeListItem,
 } from "@/components/home";
 import { BaseView } from "@/components/ui/core/base-view";
+import { List } from "@/components/ui/core/list";
 import { ActivityIndicator } from "@/components/ui/loading";
 import { useGeneralNews } from "@/hooks";
-import { FlatList, Text, View } from "react-native";
+import { Text, View } from "react-native";
 
 const cardShadowStyle = {
   shadowColor: "#000",
@@ -34,10 +35,11 @@ export default function HomeScreen() {
           <HomeEmptyState />
         ) : (
           <View>
-            <FlatList
+            <List
               className="mt-6"
               data={data ?? []}
               keyExtractor={(item) => String(item.id)}
+              estimatedItemSize={260}
               renderItem={({ item }) => (
                 <View style={cardShadowStyle}>
                   <View className="overflow-hidden rounded-xl border border-neutral-200 bg-white">

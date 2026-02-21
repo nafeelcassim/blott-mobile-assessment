@@ -1,5 +1,6 @@
 import { BaseView } from "@/components/ui/core/base-view";
 import { Button, ButtonText } from "@/components/ui/core/button";
+import { ErrorToast, useToast } from "@/components/ui/core/toast";
 import { useAuthStore } from "@/stores";
 import { LinearGradient } from "expo-linear-gradient";
 import * as LocalAuthentication from "expo-local-authentication";
@@ -13,6 +14,7 @@ export default function LoginScreen() {
   const loginWithPin = useAuthStore((s) => s.loginWithPin);
   const loginWithFaceId = useAuthStore((s) => s.loginWithFaceId);
   const faceIdEnabled = useAuthStore((s) => s.faceIdEnabled);
+  const toast = useToast();
 
   const [isFaceIdSupported, setIsFaceIdSupported] = React.useState(false);
 
@@ -31,6 +33,18 @@ export default function LoginScreen() {
       router.replace("/(main)");
       return;
     }
+
+    toast.show({
+      placement: "top",
+      duration: 2500,
+      render: ({ id }) => (
+        <ErrorToast
+          nativeID={id}
+          title="Invalid PIN"
+          description="Please try again."
+        />
+      ),
+    });
 
     setPin("");
   };

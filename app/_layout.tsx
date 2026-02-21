@@ -12,8 +12,7 @@ import { useAuthStore } from "@/stores";
 const queryClient = new QueryClient();
 
 export default function RootLayout() {
-  const { isAuthenticated, isHydrated, hydrate, faceIdSetupCompleted } =
-    useAuthStore();
+  const { isAuthenticated, isHydrated, hydrate } = useAuthStore();
 
   React.useEffect(() => {
     void hydrate();
@@ -23,7 +22,7 @@ export default function RootLayout() {
     return null;
   }
 
-  const canEnterMain = isAuthenticated && faceIdSetupCompleted;
+  const canEnterMain = isAuthenticated;
 
   return (
     <GluestackUIProvider mode="light">

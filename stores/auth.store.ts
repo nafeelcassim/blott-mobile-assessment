@@ -18,6 +18,7 @@ type AuthState = {
   isAuthenticated: boolean;
   isHydrated: boolean;
   profile: AuthProfile | null;
+  hasPin: boolean;
   faceIdEnabled: boolean;
   faceIdSetupCompleted: boolean;
 
@@ -35,6 +36,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   isAuthenticated: false,
   isHydrated: false,
   profile: null,
+  hasPin: false,
   faceIdEnabled: false,
   faceIdSetupCompleted: false,
 
@@ -50,10 +52,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         ]);
 
       const profile = fullName && email ? { fullName, email } : null;
+      const hasPin = Boolean(pin);
 
       set({
         profile,
-        isAuthenticated: Boolean(pin),
+        hasPin,
+        // Always start locked on cold start; require PIN/Face ID to unlock.
+        isAuthenticated: false,
         faceIdEnabled: Boolean(faceIdEnabled),
         faceIdSetupCompleted: Boolean(faceIdSetupCompleted),
         isHydrated: true,
@@ -76,7 +81,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   setPin: async (pin: string) => {
     await SecureStorageService.set(STORAGE_KEYS.pin, pin);
     await AsyncStorageService.set(STORAGE_KEYS.faceIdSetupCompleted, false);
-    set({ isAuthenticated: true, faceIdSetupCompleted: false });
+    set({
+      hasPin: true,
+      faceIdSetupCompleted: false,
+    });
   },
 
   setFaceIdEnabled: async (enabled: boolean) => {
@@ -94,8 +102,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   loginWithPin: async (pin: string) => {
     const storedPin = await SecureStorageService.get<string>(STORAGE_KEYS.pin);
-    const isValid = Boolean(storedPin) && storedPin === pin;
-
+    const isValid = storedPin?.toString() === pin;
     if (isValid) {
       set({ isAuthenticated: true });
     }
@@ -117,6 +124,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
     set({
       isAuthenticated: false,
+      hasPin: false,
       faceIdEnabled: false,
       faceIdSetupCompleted: false,
     });

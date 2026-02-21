@@ -10,6 +10,7 @@ import { Text, View } from "react-native";
 export default function FaceIdScreen() {
   const setFaceIdEnabled = useAuthStore((s) => s.setFaceIdEnabled);
   const completeFaceIdSetup = useAuthStore((s) => s.completeFaceIdSetup);
+  const loginWithFaceId = useAuthStore((s) => s.loginWithFaceId);
 
   const [isEnabling, setIsEnabling] = React.useState(false);
   const [isSupported, setIsSupported] = React.useState(true);
@@ -36,6 +37,7 @@ export default function FaceIdScreen() {
 
       if (result.success) {
         await setFaceIdEnabled(true);
+        await loginWithFaceId();
         router.replace("/(main)");
       }
     } finally {
@@ -45,6 +47,7 @@ export default function FaceIdScreen() {
 
   const onNotNow = async () => {
     await completeFaceIdSetup();
+    await loginWithFaceId();
     router.replace("/(main)");
   };
 

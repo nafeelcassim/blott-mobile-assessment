@@ -1,5 +1,6 @@
 import { BaseView } from "@/components/ui/core/base-view";
 import { PinInput } from "@/components/ui/core/pin-input";
+import { ErrorToast, useToast } from "@/components/ui/core/toast";
 import { PreLoginTitle } from "@/components/ui/title";
 import { useAuthStore } from "@/stores";
 import { router, useLocalSearchParams } from "expo-router";
@@ -7,9 +8,13 @@ import React from "react";
 import { View } from "react-native";
 
 export default function ConfirmPinScreen() {
-  const { pin: initialPin } = useLocalSearchParams<{ pin?: string }>();
+  const { pin: pinParam } = useLocalSearchParams<{
+    pin?: string | string[];
+  }>();
+  const initialPin = Array.isArray(pinParam) ? pinParam[0] : pinParam;
   const [pin, setPin] = React.useState("");
   const setStoredPin = useAuthStore((s) => s.setPin);
+  const toast = useToast();
 
   return (
     <BaseView>
@@ -25,6 +30,17 @@ export default function ConfirmPinScreen() {
           autoFocus
           onComplete={async (completedPin) => {
             if (initialPin && completedPin !== initialPin) {
+              toast.show({
+                placement: "top",
+                duration: 2500,
+                render: ({ id }) => (
+                  <ErrorToast
+                    nativeID={id}
+                    title="PINs don’t match"
+                    description="Please try again."
+                  />
+                ),
+              });
               setPin("");
               return;
             }
