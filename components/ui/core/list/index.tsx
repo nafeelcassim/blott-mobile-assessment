@@ -1,16 +1,11 @@
 import { FlashList, FlashListProps } from "@shopify/flash-list";
 import { cssInterop } from "nativewind";
+import { ListProps } from "./list.types";
 
 cssInterop(FlashList, {
   className: "style",
   contentContainerClassName: "contentContainerStyle",
 });
-
-type ListProps<TItem> = FlashListProps<TItem> & {
-  className?: string;
-  contentContainerClassName?: string;
-  estimatedItemSize?: number;
-};
 
 export function List<TItem>({
   estimatedItemSize = 200,

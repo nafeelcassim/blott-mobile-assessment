@@ -9,9 +9,17 @@ const httpService = new HttpService(ENV.API_URL || "");
 // Disable font scaling globally
 (Text as any).defaultProps = (Text as any).defaultProps || {};
 (Text as any).defaultProps.allowFontScaling = false;
+(Text as any).defaultProps.style = [
+  (Text as any).defaultProps.style,
+  { fontFamily: "Roboto" },
+];
 
 (TextInput as any).defaultProps = (TextInput as any).defaultProps || {};
 (TextInput as any).defaultProps.allowFontScaling = false;
+(TextInput as any).defaultProps.style = [
+  (TextInput as any).defaultProps.style,
+  { fontFamily: "Roboto" },
+];
 
 HttpServiceInstance.setHttpServiceInstance(httpService);
 
@@ -22,6 +30,7 @@ Text.render = function (...args) {
   const origin = originalRender.call(this, ...args);
   return React.cloneElement(origin, {
     allowFontScaling: false,
+    style: [origin.props.style, { fontFamily: "Roboto" }],
   });
 };
 
@@ -34,5 +43,6 @@ TextInput.render = function (...args) {
   //@ts-ignore
   return React.cloneElement(origin, {
     allowFontScaling: false,
+    style: [origin.props.style, { fontFamily: "Roboto" }],
   });
 };
