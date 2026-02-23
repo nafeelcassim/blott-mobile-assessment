@@ -19,7 +19,7 @@ export function HomeListItem({ item }: HomeListItemProps) {
   return (
     <View className="bg-white">
       <View className="flex-row gap-4 p-5">
-        <View className="h-48 w-40 overflow-hidden rounded-lg bg-neutral-100">
+        <View className="h-38 w-36 overflow-hidden rounded-lg bg-neutral-100">
           {!!item.image ? (
             <Image
               source={{ uri: item.image }}
@@ -30,20 +30,17 @@ export function HomeListItem({ item }: HomeListItemProps) {
         </View>
 
         <View className="flex-1">
-          <Text className="text-xs text-neutral-500">
+          <Text className="body-2xs text-neutral-500">
             {formatNewsDate(item.datetime)}
           </Text>
-          <Text className="mt-0.5 text-xs text-neutral-500">{item.source}</Text>
+          <Text className="mt-1 body-2xs text-neutral-500">{item.source}</Text>
 
-          <Text
-            className="mt-3 text-base font-semibold text-neutral-900"
-            numberOfLines={4}
-          >
+          <Text className="mt-3 heading-sm text-neutral-900" numberOfLines={4}>
             {item.headline}
           </Text>
 
           <Pressable onPress={onReadMore}>
-            <Text className="text-xs text-neutral-500 underline mt-3">
+            <Text className="body-2xs text-neutral-500 underline mt-3">
               Read More
             </Text>
           </Pressable>

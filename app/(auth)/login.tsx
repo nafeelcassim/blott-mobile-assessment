@@ -1,90 +1,24 @@
+import { LoginPin, NoAccountText } from "@/components/login";
 import { BaseView } from "@/components/ui/core/base-view";
 import { Button, ButtonText } from "@/components/ui/core/button";
-import { ErrorToast, useToast } from "@/components/ui/core/toast";
-import { useAuthStore } from "@/stores";
+import { TEXT } from "@/constants";
+import { useLoginScreen } from "@/hooks";
 import { LinearGradient } from "expo-linear-gradient";
-import * as LocalAuthentication from "expo-local-authentication";
-import { router } from "expo-router";
-import React from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
 
 export default function LoginScreen() {
-  const [pin, setPin] = React.useState("");
-  const inputRef = React.useRef<TextInput>(null);
-  const loginWithPin = useAuthStore((s) => s.loginWithPin);
-  const loginWithFaceId = useAuthStore((s) => s.loginWithFaceId);
-  const faceIdEnabled = useAuthStore((s) => s.faceIdEnabled);
-  const toast = useToast();
-
-  const [isFaceIdSupported, setIsFaceIdSupported] = React.useState(false);
-
-  const maxLength = 4;
-  const isComplete = pin.length === maxLength;
-
-  const handleChangeText = (text: string) => {
-    const next = text.replace(/\D/g, "").slice(0, maxLength);
-    setPin(next);
-  };
-
-  const onContinue = async () => {
-    if (!isComplete) return;
-    const ok = await loginWithPin(pin);
-    if (ok) {
-      router.replace("/(main)");
-      return;
-    }
-
-    toast.show({
-      placement: "top",
-      duration: 2500,
-      render: ({ id }) => (
-        <ErrorToast
-          nativeID={id}
-          title="Invalid PIN"
-          description="Please try again."
-        />
-      ),
-    });
-
-    setPin("");
-  };
-
-  const onUseFaceId = async () => {
-    if (!faceIdEnabled || !isFaceIdSupported) return;
-
-    const result = await LocalAuthentication.authenticateAsync({
-      promptMessage: "Login with Face ID",
-      cancelLabel: "Cancel",
-      fallbackLabel: "Use Passcode",
-    });
-
-    if (result.success) {
-      await loginWithFaceId();
-      router.replace("/(main)");
-    }
-  };
-
-  React.useEffect(() => {
-    const timer = setTimeout(() => {
-      inputRef.current?.focus();
-    }, 50);
-    return () => clearTimeout(timer);
-  }, []);
-
-  React.useEffect(() => {
-    const check = async () => {
-      if (!faceIdEnabled) {
-        setIsFaceIdSupported(false);
-        return;
-      }
-
-      const hasHardware = await LocalAuthentication.hasHardwareAsync();
-      const isEnrolled = await LocalAuthentication.isEnrolledAsync();
-      setIsFaceIdSupported(hasHardware && isEnrolled);
-    };
-
-    void check();
-  }, [faceIdEnabled]);
+  const {
+    pin,
+    inputRef,
+    maxLength,
+    isComplete,
+    isFaceIdSupported,
+    faceIdEnabled,
+    handleChangeText,
+    onContinue,
+    onUseFaceId,
+    goToRegister,
+  } = useLoginScreen(4);
 
   return (
     <BaseView className="flex-1 bg-primary-700">
@@ -98,39 +32,18 @@ export default function LoginScreen() {
       />
       <View className="flex-1 justify-between px-6">
         <View className="flex-1 items-center justify-center">
-          <Text className="text-white text-2xl font-semibold text-center">
-            Welcome to{"\n"}Finance Digest
+          <Text className="text-white heading-2xl text-center">
+            {TEXT.auth.login.title}
           </Text>
-          <Text className="mt-4 text-white/70 text-base">
-            Enter your passcode
+          <Text className="mt-8 text-white body-lg-normal text-base">
+            {TEXT.auth.login.subtitle}
           </Text>
 
-          <Pressable
+          <LoginPin
+            pin={pin}
+            maxLength={maxLength}
             onPress={() => inputRef.current?.focus()}
-            className="mt-6 flex-row gap-3"
-          >
-            {Array.from({ length: maxLength }).map((_, idx) => {
-              const isFilled = idx < pin.length;
-              return (
-                <View
-                  key={idx}
-                  className={`h-12 w-12 rounded-xl border items-center justify-center ${
-                    isFilled
-                      ? "border-white/70 bg-white/10"
-                      : "border-white/40 bg-transparent"
-                  }`}
-                >
-                  {isFilled ? (
-                    <View className="h-2.5 w-2.5 rounded-full bg-white" />
-                  ) : (
-                    <Text className="text-white/50 text-xl leading-none">
-                      -
-                    </Text>
-                  )}
-                </View>
-              );
-            })}
-          </Pressable>
+          />
 
           <TextInput
             ref={inputRef}
@@ -147,19 +60,12 @@ export default function LoginScreen() {
           {faceIdEnabled && isFaceIdSupported ? (
             <Pressable onPress={onUseFaceId} className="mt-4">
               <Text className="text-white/80 text-sm underline">
-                Use Face ID
+                {TEXT.auth.login.useFaceId}
               </Text>
             </Pressable>
           ) : null}
 
-          <Pressable
-            onPress={() => router.navigate("/register")}
-            className="mt-6"
-          >
-            <Text className="text-white/80 text-sm underline">
-              Don’t have an account?
-            </Text>
-          </Pressable>
+          <NoAccountText onPress={goToRegister} className="mt-6" />
         </View>
 
         <View className="pb-6">
@@ -169,9 +75,11 @@ export default function LoginScreen() {
             size="lg"
             isDisabled={!isComplete}
             onPress={onContinue}
-            className="rounded-full bg-white"
+            className="rounded-full bg-secondary-500"
           >
-            <ButtonText className="text-black">Continue</ButtonText>
+            <ButtonText className="text-black">
+              {TEXT.auth.login.continue}
+            </ButtonText>
           </Button>
         </View>
       </View>

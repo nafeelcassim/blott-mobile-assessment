@@ -19,13 +19,12 @@ const cardShadowStyle = {
 
 export default function HomeScreen() {
   const { data, isLoading, error, refetch, isRefetching } = useGeneralNews();
+  console.log(data);
 
   return (
     <BaseView containsList>
       <View className="flex-1 bg-white pt-8">
-        <Text className="text-4xl font-semibold text-neutral-900">
-          News Feed
-        </Text>
+        <Text className="body-4xl text-neutral-900">News Feed</Text>
 
         {isLoading ? (
           <ActivityIndicator />
@@ -34,14 +33,14 @@ export default function HomeScreen() {
         ) : (data?.length ?? 0) === 0 ? (
           <HomeEmptyState />
         ) : (
-          <View>
+          <View className="flex-1">
             <List
-              className="mt-6"
+              className="flex-1 mt-6"
               data={data ?? []}
               keyExtractor={(item) => String(item.id)}
               estimatedItemSize={260}
               renderItem={({ item }) => (
-                <View style={cardShadowStyle}>
+                <View className="mt-3" style={cardShadowStyle}>
                   <View className="overflow-hidden rounded-xl border border-neutral-200 bg-white">
                     <HomeListItem item={item} />
                   </View>

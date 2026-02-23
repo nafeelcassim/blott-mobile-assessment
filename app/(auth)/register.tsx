@@ -2,55 +2,36 @@ import { BaseView } from "@/components/ui/core/base-view";
 import { Button, ButtonText } from "@/components/ui/core/button";
 import { EyeIcon, EyeOffIcon } from "@/components/ui/core/icon";
 import {
-    Input,
-    InputField,
-    InputIcon,
-    InputSlot,
+  Input,
+  InputField,
+  InputIcon,
+  InputSlot,
 } from "@/components/ui/core/input";
 import { PreLoginTitle } from "@/components/ui/title";
-import { useAuthStore } from "@/stores";
-import { RegisterInput, registerSchema } from "@/validations/register-schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { router } from "expo-router";
-import React from "react";
-import { Controller, useForm } from "react-hook-form";
-import { View } from "react-native";
+import { TEXT } from "@/constants";
+import { useRegisterScreen } from "@/hooks";
+import { Controller } from "react-hook-form";
+import { Text, View } from "react-native";
 
 export default function RegisterScreen() {
-  const [showPassword, setShowPassword] = React.useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
-  const register = useAuthStore((s) => s.register);
-
   const {
     control,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<RegisterInput>({
-    resolver: zodResolver(registerSchema),
-    defaultValues: {
-      fullName: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    },
-  });
-
-  const onSubmit = async (values: RegisterInput) => {
-    await register({
-      fullName: values.fullName,
-      email: values.email,
-      password: values.password,
-    });
-    router.navigate("/set-pin");
-  };
+    errors,
+    isSubmitting,
+    showPassword,
+    showConfirmPassword,
+    toggleShowPassword,
+    toggleShowConfirmPassword,
+    submit,
+  } = useRegisterScreen();
 
   return (
     <BaseView edges={["bottom", "left", "right"]}>
-      <View className="flex-1 justify-between">
+      <View className="flex-1 justify-between mt-2">
         <View>
           <PreLoginTitle
-            title="Introduce yourself"
-            description="We need to know a bit about you to get you up and running."
+            title={TEXT.auth.register.title}
+            description={TEXT.auth.register.description}
           />
 
           <View className="mt-6 gap-4">
@@ -59,13 +40,13 @@ export default function RegisterScreen() {
               name="fullName"
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input
-                  label="Full Name"
+                  label={TEXT.auth.register.fullNameLabel}
                   isRequired
                   isInvalid={Boolean(errors.fullName)}
                   errorText={errors.fullName?.message}
                 >
                   <InputField
-                    placeholder="Enter your full name"
+                    placeholder={TEXT.auth.register.fullNamePlaceholder}
                     autoCapitalize="words"
                     value={value}
                     onBlur={onBlur}
@@ -80,13 +61,13 @@ export default function RegisterScreen() {
               name="email"
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input
-                  label="Email"
+                  label={TEXT.auth.register.emailLabel}
                   isRequired
                   isInvalid={Boolean(errors.email)}
                   errorText={errors.email?.message}
                 >
                   <InputField
-                    placeholder="Enter your email"
+                    placeholder={TEXT.auth.register.emailPlaceholder}
                     autoCapitalize="none"
                     keyboardType="email-address"
                     value={value}
@@ -101,26 +82,29 @@ export default function RegisterScreen() {
               control={control}
               name="password"
               render={({ field: { onChange, onBlur, value } }) => (
-                <Input
-                  label="Password"
-                  isRequired
-                  isInvalid={Boolean(errors.password)}
-                  errorText={errors.password?.message}
-                >
-                  <InputField
-                    placeholder="Create a password"
-                    secureTextEntry={!showPassword}
-                    value={value}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                  />
-                  <InputSlot
-                    className="pr-2"
-                    onPress={() => setShowPassword((prev) => !prev)}
+                <View>
+                  <Input
+                    label={TEXT.auth.register.passwordLabel}
+                    isRequired
+                    isInvalid={Boolean(errors.password)}
+                    errorText={errors.password?.message}
                   >
-                    <InputIcon as={showPassword ? EyeOffIcon : EyeIcon} />
-                  </InputSlot>
-                </Input>
+                    <InputField
+                      placeholder={TEXT.auth.register.passwordPlaceholder}
+                      secureTextEntry={!showPassword}
+                      value={value}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                    />
+                    <InputSlot className="pr-2" onPress={toggleShowPassword}>
+                      <InputIcon as={showPassword ? EyeOffIcon : EyeIcon} />
+                    </InputSlot>
+                  </Input>
+
+                  <Text className="mt-2 body-xs text-typography-500">
+                    {TEXT.auth.register.passwordHelper}
+                  </Text>
+                </View>
               )}
             />
 
@@ -129,13 +113,13 @@ export default function RegisterScreen() {
               name="confirmPassword"
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input
-                  label="Confirm Password"
+                  label={TEXT.auth.register.confirmPasswordLabel}
                   isRequired
                   isInvalid={Boolean(errors.confirmPassword)}
                   errorText={errors.confirmPassword?.message}
                 >
                   <InputField
-                    placeholder="Confirm your password"
+                    placeholder={TEXT.auth.register.confirmPasswordPlaceholder}
                     secureTextEntry={!showConfirmPassword}
                     value={value}
                     onBlur={onBlur}
@@ -143,7 +127,7 @@ export default function RegisterScreen() {
                   />
                   <InputSlot
                     className="pr-2"
-                    onPress={() => setShowConfirmPassword((prev) => !prev)}
+                    onPress={toggleShowConfirmPassword}
                   >
                     <InputIcon
                       as={showConfirmPassword ? EyeOffIcon : EyeIcon}
@@ -161,9 +145,9 @@ export default function RegisterScreen() {
             variant="solid"
             size="lg"
             isDisabled={isSubmitting}
-            onPress={handleSubmit(onSubmit)}
+            onPress={submit}
           >
-            <ButtonText>Create account</ButtonText>
+            <ButtonText>{TEXT.auth.register.submit}</ButtonText>
           </Button>
         </View>
       </View>

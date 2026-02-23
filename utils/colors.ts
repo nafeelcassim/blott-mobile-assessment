@@ -35,8 +35,8 @@ export function hexToRgba(
   })();
 
   if (output === "string") {
-    return `${r}, ${g}, ${b}`;
+    return `${r} ${g} ${b}`;
   } else {
-    return null;
+    return `${r} ${g} ${b} ${a}`;
   }
 }

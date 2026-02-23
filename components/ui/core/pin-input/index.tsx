@@ -45,7 +45,7 @@ export function PinInput({
               className={`h-4 w-4 rounded-full border ${
                 isFilled
                   ? "bg-black border-black"
-                  : "bg-transparent border-gray-400"
+                  : "bg-border-300 border-border-300"
               }`}
             />
           );

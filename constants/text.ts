@@ -1,0 +1,51 @@
+export const TEXT = {
+  auth: {
+    login: {
+      title: "Welcome to\nFinance Digest",
+      subtitle: "Enter your passcode",
+      useFaceId: "Use Face ID",
+      continue: "Continue",
+      noAccount: "Don’t have an account?",
+      invalidPinTitle: "Invalid PIN",
+      invalidPinDescription: "Please try again.",
+      faceIdPrompt: "Login with Face ID",
+      faceIdCancel: "Cancel",
+      faceIdFallback: "Use Passcode",
+    },
+    register: {
+      title: "Introduce yourself",
+      description: "We need to know a bit about you to get you up and running.",
+      fullNameLabel: "Full Name",
+      fullNamePlaceholder: "Enter your full name",
+      emailLabel: "Email",
+      emailPlaceholder: "Enter your email",
+      passwordLabel: "Password",
+      passwordPlaceholder: "Create a password",
+      confirmPasswordLabel: "Confirm Password",
+      confirmPasswordPlaceholder: "Confirm your password",
+      passwordHelper: "Must be atleast 8 characters",
+      submit: "Sign Up",
+    },
+    setPin: {
+      title: "Set a PIN",
+      description: "You can use to log back in securely",
+    },
+    confirmPin: {
+      title: "Confirm your PIN",
+      description: "Enter tour PIN one more time",
+      mismatchTitle: "PINs don’t match",
+      mismatchDescription: "Please try again.",
+    },
+    faceId: {
+      title: "Login with a Look",
+      supportedDescription:
+        "Use face ID instead of a password next time you login.",
+      unsupportedDescription: "Face ID is not available on this device.",
+      enable: "Enable Face ID",
+      notNow: "Not now",
+      enablePrompt: "Enable Face ID",
+      enableCancel: "Cancel",
+      enableFallback: "Use Passcode",
+    },
+  },
+} as const;

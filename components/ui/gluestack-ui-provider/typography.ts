@@ -84,6 +84,10 @@ export const TYPOGRAPHY = {
       fontSize: 24,
       lineHeight: lineHeight100(24),
     } satisfies BodyToken,
+    "4xl": {
+      fontSize: 36,
+      lineHeight: lineHeight100(36),
+    } satisfies BodyToken,
     "3xl": {
       fontSize: 30,
       lineHeight: lineHeight100(30),
