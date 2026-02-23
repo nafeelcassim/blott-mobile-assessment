@@ -4,7 +4,7 @@ import { Button, ButtonText } from "@/components/ui/core/button";
 import { TEXT } from "@/constants";
 import { useLoginScreen } from "@/hooks";
 import { LinearGradient } from "expo-linear-gradient";
-import { Pressable, Text, TextInput, View } from "react-native";
+import { Text, TextInput, View } from "react-native";
 
 export default function LoginScreen() {
   const {
@@ -12,11 +12,8 @@ export default function LoginScreen() {
     inputRef,
     maxLength,
     isComplete,
-    isFaceIdSupported,
-    faceIdEnabled,
     handleChangeText,
     onContinue,
-    onUseFaceId,
     goToRegister,
   } = useLoginScreen(4);
 
@@ -56,14 +53,6 @@ export default function LoginScreen() {
             caretHidden
             className="absolute opacity-0"
           />
-
-          {faceIdEnabled && isFaceIdSupported ? (
-            <Pressable onPress={onUseFaceId} className="mt-4">
-              <Text className="text-white/80 text-sm underline">
-                {TEXT.auth.login.useFaceId}
-              </Text>
-            </Pressable>
-          ) : null}
 
           <NoAccountText onPress={goToRegister} className="mt-6" />
         </View>

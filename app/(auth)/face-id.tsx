@@ -22,7 +22,7 @@ export default function FaceIdScreen() {
           <Text className="mt-6 body-2xl text-black">
             {TEXT.auth.faceId.title}
           </Text>
-          <Text className="mt-2 body-md text-base text-gray-500 max-w-[280px]">
+          <Text className="mt-2 body-md text-center text-base text-gray-500 max-w-[280px]">
             {isSupported
               ? TEXT.auth.faceId.supportedDescription
               : TEXT.auth.faceId.unsupportedDescription}

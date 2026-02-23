@@ -19,7 +19,6 @@ const cardShadowStyle = {
 
 export default function HomeScreen() {
   const { data, isLoading, error, refetch, isRefetching } = useGeneralNews();
-  console.log(data);
 
   return (
     <BaseView containsList>
