@@ -17,7 +17,7 @@ export function HomeListItem({ item }: HomeListItemProps) {
   }, [item.url]);
 
   return (
-    <View className="bg-white">
+    <Pressable className="bg-white" onPress={onReadMore}>
       <View className="flex-row gap-4 p-5">
         <View className="h-38 w-36 overflow-hidden rounded-lg bg-neutral-100">
           {!!item.image ? (
@@ -39,13 +39,11 @@ export function HomeListItem({ item }: HomeListItemProps) {
             {item.headline}
           </Text>
 
-          <Pressable onPress={onReadMore}>
-            <Text className="body-2xs text-neutral-500 underline mt-3">
-              Read More
-            </Text>
-          </Pressable>
+          <Text className="body-2xs text-neutral-500 underline mt-3">
+            Read More
+          </Text>
         </View>
       </View>
-    </View>
+    </Pressable>
   );
 }
