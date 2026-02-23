@@ -1,20 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-/**
- * AsyncStorageService
- *
- * A typed wrapper around @react-native-async-storage/async-storage.
- * Automatically serialises/deserialises JSON values.
- *
- * Usage:
- *   await AsyncStorageService.set("user", { id: 1, name: "Alice" });
- *   const user = await AsyncStorageService.get<{ id: number; name: string }>("user");
- *   await AsyncStorageService.delete("user");
- *   await AsyncStorageService.clear();
- */
 export class AsyncStorageService {
-  // ─── Write ────────────────────────────────────────────────────────────────
-
   /**
    * Store a value. Objects/arrays are JSON-serialised automatically.
    */
@@ -46,8 +32,6 @@ export class AsyncStorageService {
       throw error;
     }
   }
-
-  // ─── Read ─────────────────────────────────────────────────────────────────
 
   /**
    * Retrieve a value. Returns `null` when the key does not exist.
@@ -108,8 +92,6 @@ export class AsyncStorageService {
     }
   }
 
-  // ─── Delete ───────────────────────────────────────────────────────────────
-
   /**
    * Remove a single key.
    */
@@ -145,8 +127,6 @@ export class AsyncStorageService {
       throw error;
     }
   }
-
-  // ─── Helpers ──────────────────────────────────────────────────────────────
 
   /**
    * Returns `true` if the key exists in storage.

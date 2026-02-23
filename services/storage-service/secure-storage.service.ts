@@ -1,32 +1,8 @@
 import * as SecureStore from "expo-secure-store";
 
-/**
- * expo-secure-store key constraints:
- *  - Only alphanumeric characters, ".", "-", and "_" are allowed.
- *  - Max value size is 2 048 bytes on some devices.
- *
- * SecureStorageService sanitises keys automatically.
- */
-
 export type SecureStoreOptions = SecureStore.SecureStoreOptions;
 
-/**
- * SecureStorageService
- *
- * A typed wrapper around expo-secure-store.
- * Automatically serialises/deserialises JSON values.
- * Falls back to AsyncStorage on platforms where SecureStore is unavailable
- * (e.g. web) — import and swap AsyncStorageService there if needed.
- *
- * Usage:
- *   await SecureStorageService.set("auth_token", "eyJ...");
- *   await SecureStorageService.set("user", { id: 1, role: "admin" });
- *   const token = await SecureStorageService.get<string>("auth_token");
- *   await SecureStorageService.delete("auth_token");
- */
 export class SecureStorageService {
-  // ─── Internal helpers ─────────────────────────────────────────────────────
-
   /**
    * expo-secure-store only allows [A-Za-z0-9._-].
    * Replace any other character with "_".
@@ -47,16 +23,12 @@ export class SecureStorageService {
     }
   }
 
-  // ─── Availability ─────────────────────────────────────────────────────────
-
   /**
    * Returns `true` when the device supports SecureStore (always false on web).
    */
   static async isAvailable(): Promise<boolean> {
     return SecureStore.isAvailableAsync();
   }
-
-  // ─── Write ────────────────────────────────────────────────────────────────
 
   /**
    * Securely store a value.
@@ -78,8 +50,6 @@ export class SecureStorageService {
       throw error;
     }
   }
-
-  // ─── Read ─────────────────────────────────────────────────────────────────
 
   /**
    * Retrieve a securely stored value.
