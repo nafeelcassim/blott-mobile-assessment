@@ -139,7 +139,7 @@ export default function RegisterScreen() {
           </View>
         </View>
 
-        <View className="pt-6">
+        <View className="pt-6 pb-6">
           <Button
             action="primary"
             variant="solid"
